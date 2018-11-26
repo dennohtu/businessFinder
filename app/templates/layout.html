@@ -28,8 +28,12 @@
                 </div>
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
-                <a class="nav-item nav-link" href="{{ url_for('signin') }}">Login</a>
-                <a class="nav-item nav-link" href="{{ url_for('signup') }}">Register</a>
+                    {% if loggedIn %}
+                        <a class="nav-item nav-link" href="{{ url_for('signout') }}">Log out</a>
+                    {% else %}
+                        <a class="nav-item nav-link" href="{{ url_for('signin') }}">Login</a>
+                        <a class="nav-item nav-link" href="{{ url_for('signup') }}">Register</a>
+                    {% endif %}
                 </div>
             </div>
             </div>

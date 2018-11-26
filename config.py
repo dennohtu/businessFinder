@@ -1,1 +1,3 @@
 DEBUG = True
+##Secret key to handle cookie encryption
+SECRET_KEY = '9e08f244b77f44ca910461519b2e0ed6'
