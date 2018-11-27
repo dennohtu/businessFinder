@@ -1,16 +1,18 @@
 from flask import render_template, url_for, flash, redirect
 from app import app
 #Using FlaskForm to create forms...makes work much easier to do and maintain
-from .forms import RegistrationForm, LoginForm
+from .forms import RegistrationForm, LoginForm, RegBusinessForm
 ##Handles all data
-from .database import User
+from .database import User, Business, Category
 ##Session handler
 from .session import Session
 ##encrypts passwords
 from flask_bcrypt import Bcrypt
 
-##Empty dict
+##Empty user dict
 user_data = dict()
+##Empty business dict
+business_data = dict()
 ##Bcrypt instance to hash paswords
 bcrypt = Bcrypt(app)
 
@@ -94,6 +96,36 @@ def signout():
         Session.dropSession()
     
     return redirect(url_for('signin'))
+@app.route('/post/business', methods=['POST', 'GET'])
+def newBiz():
+    ##Getting business Ids
+    if not business_data:
+        counter = 1
+    else:
+        counter = int(list(business_data.keys())[-1]) + 1
+    app = {
+        "title": "New Business",
+        "heading": "Create New Business"
+    }
+    form = RegBusinessForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        name = form.name.data
+        description = form.description.data
+        category = form.category.data
 
-if __name__ == '__main__':
-    app.run(debug=True)
+        #Create new business instance
+        biz = Business(name, email, description)
+        #Explode values of category into list
+        catList = category.split(",")
+        #Loop through list creating categories and adding them to business
+        catid = 1
+        for category in catList:
+            cat = Category(catid, category)
+            biz.addItem('category', cat.returnCategory())
+            catid = catid + 1
+        business_data.update({counter:biz.returnBusiness()})
+        flash(f"New business {name} created", 'success')
+        #Incomplete hence will fail
+        redirect(url_for('location'))
+    return render_template('create_business.html', app=app, form=form)

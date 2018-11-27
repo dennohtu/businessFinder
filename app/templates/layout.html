@@ -29,6 +29,7 @@
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
                     {% if loggedIn %}
+                    <a class="nav-item nav-link" href="{{ url_for('newBiz') }}">Create Business</a>
                         <a class="nav-item nav-link" href="{{ url_for('signout') }}">Log out</a>
                     {% else %}
                         <a class="nav-item nav-link" href="{{ url_for('signin') }}">Login</a>
