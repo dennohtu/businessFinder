@@ -1,0 +1,83 @@
+<!--Displays Business particular information-->
+{% extends "layout.html" %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                    <article class="media content-section">
+                        <div class="media-body">
+                            <div class="article-metadata">
+                                <a class="mr-2" href="#">{{ post.owner.username }}</a>
+                                <small class="text-muted">{{ post.date_posted }}</small>
+                            </div>
+                            <h2><a class="article-title" href="#">{{ post.name }}</a></h2>
+                            <p class="article-content">{{ post.description }}</p>
+                            <div class="article-metadata">
+                                <div class=row>
+                                    <div class="col-sm-6">
+                                        <h4 class="text-muted">Categories</h4>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <h4 class="text-muted">Locations</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    {% for category in categories %}
+                                        {% if post.owner == current_user %}
+                                            <p class="article-content article-metadata">{{ category.category }}
+                                                <a class="m-1" href="{{ url_for('updateBusinessInfo',biz_id=post.id,category='category',cat_id=category.id) }}">Delete</a></p>
+                                        {% else %}
+                                            <p class="article-content article-metadata">{{ category.category }}</p>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <div class="col-sm-6">
+                                    {% for location in locations %}
+                                        {% if post.owner == current_user %}
+                                            <p class="article-content article-metadata">County: {{ location.county }}
+                                                    Region: {{ location.region }}
+                                                    Location: {{ location.location }}
+                                                <a class="m-1" href="{{ url_for('updateBusinessInfo',biz_id=post.id,category='location',cat_id=location.id) }}">Delete</a></p>
+                                        {% else %}
+                                        <p class="article-content article-metadata">County: {{ location.county }}
+                                                Region: {{ location.region }}
+                                                Location: {{ location.location }}</p>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% if post.owner == current_user %}
+                                <div>
+                                    <a href="{{ url_for('updateBusiness', biz_id=post.id) }}" class="btn btn-secondary btn-sm m-1">Update {{post.name}}</a>
+                                    <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModalLong">Delete {{post.name}}</button>
+                                </div>
+                            {% endif %}
+                        </div>
+                  </article>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModalLong" tabindex="-1" role="dialog" aria-labelledby="deleteModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteModalLongTitle">Delete Business?</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <form action="{{ url_for('deleteBusiness', biz_id=post.id) }}" method="POST">
+                  <input type="submit" class="btn btn-danger" value="Delete">
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+{% endblock content %}

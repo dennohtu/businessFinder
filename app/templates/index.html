@@ -1,46 +1,22 @@
-<!--{1: {'name': 'My biz', 'email': 'dennismureithi10@gmail.com', 'description': 'sdfjgdskbdhdj',
-    'location': [{'id': 1, 'county': 'Homa Bay', 'region': 'Kisumu', 'location': 'opp main stage'}], 
-    'category': [{'id': 1, 'category': 'a'}, {'id': 2, 'category': ' business'}, 
-    {'id': 3, 'category': ' idea'}, {'id': 4, 'category': ' good'}], 'reviews': []}}-->
 {% extends "layout.html" %}
 {% block content %}
-    <div class="landing">
-        <div class="grid-container">
-            <div class="grid-item">
-                {% for key, value in data.items() %}
-                    <div class="item-header">{{ value['name'] }}</div>
-                    <div class="item-content">{{value['email']}}</div>
-                    <div class="item-content">{{value['description']}}</div>
-                    <div class="grid-container">
-                        <div class="grid-item">
-                            <div class="grid-container">
-                                {% for location in value['location'] %}
-                                    <div class="grid-item">
-                                        {% for key in location %}
-                                            <div class="item-content">{{location[key]}}</div>
-                                        {% endfor %}
-                                    </div>
-                                {% endfor %}
-                            </div>
+    <div class="grid-container">
+            {% for post in data %}
+                <div class="grid-item">
+                    <div class="blog-card spring-fever">
+                        <div class="title-content">
+                            <h3><a href="#">{{post.name}}</a></h3>
+                            <div class="intro"> Founder: {{post.owner.username}} </div>
                         </div>
-                        <div class="grid-item">
-                            {% for category in value['category'] %}
-                                <div class="item-content">{{category['category']}}</div>
-                            {% endfor %}
+                        <div class="card-info trimmed">
+                            <a href="{{url_for('business', biz_id=post.id)}}">Read More<span class="licon icon-arr icon-black"></span></a>
+                            {{post.description}}
                         </div>
+                        <div class="gradient-overlay"></div>
+                        <div class="color-overlay"></div>
                     </div>
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <a href="#"><big>Reviews</big></a>
-                            </div>
-                            <div class="col-sm-6">
-                                <a href="{{ url_for('updateBusiness', id=key) }}">Update profile</a>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
+                </div>
+            {% endfor %}
     </div>
+    
 {% endblock content %}
