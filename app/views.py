@@ -4,7 +4,7 @@ from PIL import Image ##Resize image
 from flask import render_template, url_for, flash, redirect, request, abort
 from app import app, db, bcrypt
 #Using FlaskForm to create forms...makes work much easier to do and maintain
-from .forms import RegistrationForm, LoginForm, RegBusinessForm, UpdateAccountForm, CompleteBusinessProfile
+from .forms import RegistrationForm, LoginForm, RegBusinessForm, UpdateAccountForm, CompleteBusinessProfile, WriteReviewForm
 ##Handles all data
 from .model import User, Business, Category, Location, Review
 from flask_login import login_user, current_user, logout_user, login_required
@@ -19,6 +19,16 @@ def index():
     }
     data = Business.query.all()
     return render_template("index.html", app=app, data=data)
+
+##About page endpoint
+@app.route('/about')
+def about():
+    body = "This site was founded by Dennis Mureithi in 2018. It aims at connecting consumers and businesses by creating an easy platform for searching for what they desire. This site is not the actual business!"
+    app = {
+        "title":"About us",
+        "body" : body
+    }
+    return render_template('about.html', app=app)
 
 ##Register user endpoint
 @app.route("/signup", methods=['GET', 'POST'])
@@ -169,10 +179,11 @@ def business(biz_id):
     data = Business.query.get_or_404(biz_id)
     category = Category.query.filter_by(business_id=biz_id).all()
     location = Location.query.filter_by(business_id=biz_id).all()
+    review = Review.query.filter_by(business_id=biz_id).all()
     app = {
         "title": "Business Profile"
     }
-    return render_template('business_info.html', app=app, post=data, categories=category, locations=location)
+    return render_template('business_info.html', app=app, post=data, categories=category, locations=location, reviews=review)
 
 #Update business endpoint
 #One has to be logged iin to access this page
@@ -274,3 +285,52 @@ def deleteBusiness(biz_id):
     db.session.commit()
     flash('Business deleted!', 'success')
     return redirect(url_for('index'))
+
+##Write new review
+@app.route('/business/<int:biz_id>/review/<int:rev_id>', methods=['POST', 'GET'])
+@login_required
+def review(biz_id, rev_id):
+    app = {
+        "title":"Write review"
+    }
+    if rev_id != 0:
+        rev_data = Review.query.get(rev_id)
+    biz_data = Business.query.get(biz_id)
+    if biz_data.owner == current_user:
+        abort(403)
+    form = WriteReviewForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        message = form.message.data
+        if rev_id == 0:
+            review = Review(business=biz_data, email=email, message=message)
+            db.session.add(review)
+        else:
+            rev_data.email = form.email.data
+            rev_data.message = form.message.data
+        db.session.commit()
+        flash("Review added successfully", 'success')
+        return redirect(url_for('business', biz_id=biz_id))
+    elif request.method == 'GET':
+        form.email.data = current_user.email
+        if rev_id !=0:
+            form.message.data = rev_data.message
+    return render_template('review.html', app=app, form=form)
+
+#Update/delete existing review
+@app.route('/business/review/<int:rev_id>/<action>', methods=['POST', 'GET'])
+@login_required
+def updateReview(rev_id, action):
+    app = {
+        "title":"Update review"
+    }
+    rev_data = Review.query.get_or_404(rev_id)
+    if rev_data.email != current_user.email:
+        abort(403)
+    if action == 'delete':
+        db.session.delete(rev_data)
+        db.session.commit()
+        flash('deleted!', 'success')
+        return redirect(url_for('business', biz_id=rev_data.business_id))
+    elif action == 'update':
+        return redirect(url_for('review', biz_id=rev_data.business_id, rev_id=rev_id))
