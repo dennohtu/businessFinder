@@ -100,7 +100,7 @@ def save_prof_pic(form_picture):
 def account():
     app = {
         "title":"Account Page",
-        "Heading":"My Account",
+        "heading":"My Account",
         "image_file":url_for('static', filename='profile_pics/'+current_user.image_file)
     }
     form = UpdateAccountForm()

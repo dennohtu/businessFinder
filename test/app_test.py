@@ -15,11 +15,11 @@ def test_models_create_db(test_client):
 
 def test_insert_data(test_client):
     ##New user
-    db.session.add(User(username="testUser1", email="test@user@g.com",
+    db.session.add(User(username="testUser1", email="test@user.com",
      password=bcrypt.generate_password_hash("test").decode('utf-8')))
-    db.session.add(User(username="testUser2", email="test2@user@g.com",
+    db.session.add(User(username="testUser2", email="test2@user.com",
      password=bcrypt.generate_password_hash("test").decode('utf-8')))
-    db.session.add(User(username="testUser3", email="test3@user@g.com",
+    db.session.add(User(username="testUser3", email="test3@user.com",
      password=bcrypt.generate_password_hash("test").decode('utf-8')))
     ##New Business
     db.session.add(Business(owner=User.query.get(1), name="Business1",
@@ -60,20 +60,37 @@ def test_about(test_client):
     assert about.status_code == 200
     assert b'This site was founded by Dennis Mureithi in 2018' in about.data
 
-def test_auth_pages(test_client):
-    signup = test_client.get('/signup')
-    assert signup.status_code == 200
+##Test signup(register) of user
+def test_register_user(test_client):
+    reg = test_client.post('/signup',
+     data=dict(email="dennoh@test.com",username="dennoh",password="test",),
+      follow_redirects=True)
+    assert b'Home' in reg.data
 
-    signin = test_client.get('/signin')
-    assert signin.status_code == 200
+##Test login of user
+def test_loginUser(test_client):
+    login = test_client.post('/signin',
+     data=dict(email="test@user.com", password='test'), follow_redirects=True)
+    assert b'Home' in login.data
 
-def test_account(test_client):
+##Test account page works. Will redirect to signin requiring user signin
+def test_account_page(test_client):
     account = test_client.get('/account', follow_redirects=True)
-    assert account.status_code == 200
+    assert account.status_code == 200 
+    assert b'Sign In' in account.data
 
+##test user logout
 def test_signout(test_client):
     signout = test_client.get('/signout', follow_redirects=True)
     assert signout.status_code == 200
+    assert b'Sign In' in signout.data
+
+
+##Test login using incorrect creds
+def test_login_incorrect(test_client):
+    login = test_client.post('/signin',
+     data=dict(email="test@user.com", password='testing'), follow_redirects=True)
+    assert b'Sign In' in login.data
 
 ##Business involved pages
 def test_create_business_link(test_client):
