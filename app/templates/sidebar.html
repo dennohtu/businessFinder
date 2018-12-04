@@ -1,12 +1,38 @@
 <div class="col-md-4">
     <div class="content-section">
-        <h3>Our Sidebar</h3>
-        <p class='text-muted'>Sidebar
+        <h3 class="text-muted">Business Finder</h3>
         <ul class="list-group">
-            <li class="list-group-item list-group-item-light">Search by Location</li>
-            <li class="list-group-item list-group-item-light">Search by category</li>
-            <li class="list-group-item list-group-item-light">Search by name</li>
+            <li class="list-group-item list-group-item-light">
+                <div class="text-muted">Search by Name</div>
+                <radiogroup class="article-content">
+                    <form method="POST", action="{{ url_for('search', category='name') }}">
+                        <input type="search" name="search" placeholder="Enter business name">
+                        <input type="submit" class="btn btn-primary m-1" value="Search">
+                    </form>
+                </radiogroup>
+            </li>
+            <li class="list-group-item list-group-item-light">
+                <div class="text-muted">Search by Location</div>
+                <radiogroup class="article-content">
+                    <form method="POST", action="{{ url_for('search', category='location') }}">
+                        {% for location in locations %}
+                            <input type="radio" name="location" value="{{location}}">{{location}}
+                        {% endfor %}
+                        <input type="submit" class="btn btn-primary" value="Search">
+                    </form>
+                </radiogroup>
+            </li>
+            <li class="list-group-item list-group-item-light">
+                <div class="text-muted">Search by category</div>
+                <radiogroup class="article-content">
+                    <form method="POST", action="{{ url_for('search', category='category') }}">
+                        {% for category in categories %}
+                            <input type="radio" name="category" value="{{category}}">{{category}}
+                        {% endfor %}
+                        <input type="submit" class="btn btn-primary" value="Search">
+                    </form>
+                </radiogroup>
+            </li>
         </ul>
-        </p>
     </div>
 </div>

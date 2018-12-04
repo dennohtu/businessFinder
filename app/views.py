@@ -1,7 +1,7 @@
 import os ##Save image to disk
 import secrets #Give image random name
 from PIL import Image ##Resize image
-from flask import render_template, url_for, flash, redirect, request, abort
+from flask import render_template, url_for, flash, redirect, request, abort, request
 from app import app, db, bcrypt
 #Using FlaskForm to create forms...makes work much easier to do and maintain
 from .forms import RegistrationForm, LoginForm, RegBusinessForm, UpdateAccountForm, CompleteBusinessProfile, WriteReviewForm
@@ -28,7 +28,7 @@ def about():
         "title":"About us",
         "body" : body
     }
-    return render_template('about.html', app=app)
+    return render_template('about.html', app=app, locations=locAndCat()[1], categories=locAndCat()[0])
 
 ##Register user endpoint
 @app.route("/signup", methods=['GET', 'POST'])
@@ -334,3 +334,59 @@ def updateReview(rev_id, action):
         return redirect(url_for('business', biz_id=rev_data.business_id))
     elif action == 'update':
         return redirect(url_for('review', biz_id=rev_data.business_id, rev_id=rev_id))
+
+###Return location and categories to display on the sidebar
+def locAndCat():
+    locations = Location.query.all()
+    categories = Category.query.all()
+    ##Append categories to a list
+    cat_list = []
+    for category in categories:
+        if category.category not in cat_list:
+            cat_list.append(category.category)
+    ##append counties to a list
+    loc_list = []
+    for location in locations:
+        if location.county not in loc_list:
+            loc_list.append(location.county)
+    return [cat_list, loc_list]
+
+##Search businesses by name/category/location
+@app.route("/business/search/<category>", methods=["POST"])
+def search(category):
+    app = {
+        "title":"Search",
+        "heading": "Search Results"
+    }
+    businesses = searchItem(category)
+    return render_template('index.html', app=app, data=businesses)
+
+##Private method that returns a list of businesses
+def searchItem(category):
+    businesses = []
+    if category == 'location':
+        county = request.form["location"]
+        print(county)
+        #Get all locations with the county
+        locations = Location.query.filter_by(county=county).all()
+        biz_ids = []
+        for location in locations:
+            biz_ids.append(location.business_id)
+        ##Get businesses by id and append to list
+        for id in biz_ids:
+            businesses.append(Business.query.get(id))
+    elif category == 'category':
+        category = request.form['category']
+        #Get all categories that match
+        categories = Category.query.filter_by(category=category).all()
+        biz_ids = []
+        for cat in categories:
+            biz_ids.append(cat.business_id)
+        ##Get businesses by ids
+        for id in biz_ids:
+            businesses.append(Business.query.get(id))
+    elif category == 'name':
+        name = request.form['search']
+        #search businesses by name
+        return Business.query.filter_by(name=name).all()
+    return businesses 

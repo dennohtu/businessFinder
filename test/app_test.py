@@ -28,6 +28,24 @@ def test_insert_data(test_client):
      description="Some description"))
     db.session.add(Business(owner=User.query.get(3), name="Business3",
      description="Some description"))
+    ##Add location
+    db.session.add(Location(business=Business.query.get(1), county='Kiambu',
+     region='Lari', location='Some location'))
+    db.session.add(Location(business=Business.query.get(2), county='Nairobi',
+     region='Ruiru', location='Membley'))
+    db.session.add(Location(business=Business.query.get(3), county='Kajiado',
+     region='Some region', location='Some location'))
+    ##Add Category
+    db.session.add(Category(business=Business.query.get(1), category='Some category'))
+    db.session.add(Category(business=Business.query.get(2), category='Some category'))
+    db.session.add(Category(business=Business.query.get(3), category='Some category'))
+    ##Add review
+    db.session.add(Review(business=Business.query.get(1), email='test@user.com',
+     message='Some message'))
+    db.session.add(Review(business=Business.query.get(2), email='test1@user.com',
+     message='Some message'))
+    db.session.add(Review(business=Business.query.get(3), email='test2@user.com',
+     message='Some message'))
     db.session.commit()
 
 
