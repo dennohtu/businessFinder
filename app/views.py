@@ -181,7 +181,8 @@ def business(biz_id):
     location = Location.query.filter_by(business_id=biz_id).all()
     review = Review.query.filter_by(business_id=biz_id).all()
     app = {
-        "title": "Business Profile"
+        "title": "Business Profile",
+        "heading": "Business Info"
     }
     return render_template('business_info.html', app=app, post=data, categories=category, locations=location, reviews=review)
 
@@ -366,7 +367,6 @@ def searchItem(category):
     businesses = []
     if category == 'location':
         county = request.form["location"]
-        print(county)
         #Get all locations with the county
         locations = Location.query.filter_by(county=county).all()
         biz_ids = []
