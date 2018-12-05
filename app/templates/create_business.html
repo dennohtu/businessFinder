@@ -1,0 +1,114 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <form action="" method="POST">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{app.legend}}</legend>
+            <div class="form-group">
+                {{ form.email.label(class="form-control-label")}}
+                
+                {% if form.email.errors %}
+                    {{ form.email(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {%for error in form.email.errors %}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                {{ form.email(readonly="readonly", class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.name.label(class="form-control-label")}}
+                {% if form.name.errors %}
+                    {{ form.name(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {%for error in form.name.errors %}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.name(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.description.label(class="form-control-label")}}
+                {% if form.description.errors %}
+                    {{ form.description(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {%for error in form.description.errors %}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.description(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        {% if app.legend == "Update Business" %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-2">Business Information</legend>
+                <div class="form-group">
+                    {{ comp_form.category.label(class="form-control-label")}}
+                    {% if comp_form.category.errors %}
+                        {{ comp_form.category(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {%for error in form.category.errors %}
+                                <span>{{error}}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ comp_form.category(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ comp_form.county.label(class="form-control-label")}}
+                    {% if comp_form.county.errors %}
+                        {{ comp_form.county(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {%for error in form.county.errors %}
+                                <span>{{error}}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ comp_form.county(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ comp_form.region.label(class="form-control-label")}}
+                    {% if comp_form.region.errors %}
+                        {{ comp_form.region(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {%for error in form.region.errors %}
+                                <span>{{error}}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ comp_form.region(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ comp_form.location.label(class="form-control-label")}}
+                    {% if comp_form.location.errors %}
+                        {{ comp_form.location(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {%for error in form.location.errors %}
+                                <span>{{error}}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ comp_form.location(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+        {% endif %}
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content  %}
+{% block sidebar %}
+    {% include "sidebar.html" %}
+{% endblock sidebar %}

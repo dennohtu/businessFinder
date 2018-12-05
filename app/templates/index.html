@@ -1,6 +1,23 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div class="landing">
-        <img src="{{ url_for('static', filename = 'landing.jpeg') }}" alt="Landing Page Image">
+    <h1 class="text-muted">{{app.heading}}</h1>
+    <div class="grid-container">
+            {% for post in data %}
+                <div class="grid-item">
+                    <div class="blog-card spring-fever">
+                        <div class="title-content">
+                            <h3><a href="#">{{post.name}}</a></h3>
+                            <div class="intro"> Founder: {{post.owner.username}} </div>
+                        </div>
+                        <div class="card-info trimmed">
+                            <a href="{{url_for('business', biz_id=post.id)}}">Read More<span class="licon icon-arr icon-black"></span></a>
+                            {{post.description}}
+                        </div>
+                        <div class="gradient-overlay"></div>
+                        <div class="color-overlay"></div>
+                    </div>
+                </div>
+            {% endfor %}
     </div>
+    
 {% endblock content %}

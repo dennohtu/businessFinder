@@ -1,4 +1,4 @@
-#!/home/dennoh/Desktop/andela/venv/bin/python
+#!/home/dennoh/Desktop/businessFinder/venv/bin/python
 
 import sys
 import getopt

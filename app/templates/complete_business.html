@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <form action="" method="POST">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-2">Complete Business Profile</legend>
+            <div class="form-group">
+                {{ form.category.label(class="form-control-label")}}
+                {% if form.category.errors %}
+                    {{ form.category(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {%for error in form.category.errors %}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.category(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.county.label(class="form-control-label")}}
+                {% if form.county.errors %}
+                    {{ form.county(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {%for error in form.county.errors %}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.county(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.region.label(class="form-control-label")}}
+                {% if form.region.errors %}
+                    {{ form.region(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {%for error in form.region.errors %}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.region(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.location.label(class="form-control-label")}}
+                {% if form.location.errors %}
+                    {{ form.location(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {%for error in form.location.errors %}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.location(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content  %}
+{% block sidebar %}
+    {% include "sidebar.html" %}
+{% endblock sidebar %}
