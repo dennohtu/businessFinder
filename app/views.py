@@ -184,7 +184,7 @@ def business(biz_id):
         "title": "Business Profile",
         "heading": "Business Info"
     }
-    return render_template('business_info.html', app=app, post=data, categories=category, locations=location, reviews=review)
+    return render_template('business_info.html', app=app, post=data, categoriess=category, locationss=location, reviews=review, locations=locAndCat()[1], categories=locAndCat()[0])
 
 #Update business endpoint
 #One has to be logged iin to access this page
