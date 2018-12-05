@@ -10,8 +10,8 @@ from .model import User, Business, Category, Location, Review
 from flask_login import login_user, current_user, logout_user, login_required
 
 ##Home page, apps landing page endpoint
-@app.route("/")
-@app.route("/index")
+@app.route("/", methods=['GET'])
+@app.route("/index", methods=['GET'])
 def index():
     app = {
         "title":"Business Finder",
@@ -21,7 +21,7 @@ def index():
     return render_template("index.html", app=app, data=data)
 
 ##About page endpoint
-@app.route('/about')
+@app.route('/about', methods=['GET'])
 def about():
     body = "This site was founded by Dennis Mureithi in 2018. It aims at connecting consumers and businesses by creating an easy platform for searching for what they desire. This site is not the actual business!"
     app = {
@@ -119,7 +119,7 @@ def account():
     return render_template('account.html', app=app, form=form, locations=locAndCat()[1], categories=locAndCat()[0])
 
 #logout Endpoint
-@app.route('/signout')
+@app.route('/signout', methods=['POST', 'GET'])
 def signout():
     logout_user()
     return redirect(url_for('signin'))
