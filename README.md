@@ -5,4 +5,4 @@ Customers can log in the application and view a catalogue of registered business
 
 [![Build Status](https://travis-ci.org/dennohtu/businessFinder.svg?branch=complete)](https://travis-ci.org/dennohtu/businessFinder)
 
-https://coveralls.io/repos/dennohtu/businessFinder/badge.png
+[![coveralls Analysis](https://coveralls.io/repos/dennohtu/businessFinder/badge.png)](https://coveralls.io/r/dennohtu/businessFinder)
