@@ -4,3 +4,5 @@ A platform that provides business owners to register and display their business 
 Customers can log in the application and view a catalogue of registered businesses and be able to give reviews.
 
 [![Build Status](https://travis-ci.org/dennohtu/businessFinder.svg?branch=complete)](https://travis-ci.org/dennohtu/businessFinder)
+
+https://coveralls.io/repos/dennohtu/businessFinder/badge.png
