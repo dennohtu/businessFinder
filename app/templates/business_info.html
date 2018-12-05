@@ -1,6 +1,7 @@
 <!--Displays Business particular information-->
 {% extends "layout.html" %}
 {% block content %}
+    <h1 class='text-muted'>{{app.heading}}</h1>
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12">
@@ -24,7 +25,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-6">
-                                    {% for category in categories %}
+                                    {% for category in categoriess %}
                                         {% if post.owner == current_user %}
                                             <p class="article-content article-metadata">{{ category.category }}
                                                 <a class="m-1" href="{{ url_for('updateBusinessInfo',biz_id=post.id,category='category',cat_id=category.id) }}">Delete</a></p>
@@ -34,7 +35,7 @@
                                     {% endfor %}
                                 </div>
                                 <div class="col-sm-6">
-                                    {% for location in locations %}
+                                    {% for location in locationss %}
                                         {% if post.owner == current_user %}
                                             <p class="article-content article-metadata">County: {{ location.county }}
                                                     Region: {{ location.region }}
@@ -53,10 +54,31 @@
                                     <a href="{{ url_for('updateBusiness', biz_id=post.id) }}" class="btn btn-secondary btn-sm m-1">Update {{post.name}}</a>
                                     <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModalLong">Delete {{post.name}}</button>
                                 </div>
+                            {% else %}
+                                <a href="{{ url_for('review', biz_id=post.id, rev_id=0) }}" class="btn btn-secondary btn-sm m-1">Write Review</a>
                             {% endif %}
                         </div>
                   </article>
-                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                {% for review in reviews %}
+                    <article class="media content-section">
+                        <div class="media-body">
+                            <div class="article-metadata">
+                                <small class="text-muted">{{ review.email }}</small>
+                            </div>
+                            <div class="article-content">{{ review.message }}</div>
+                            {% if review.email == current_user.email %}
+                                <div class="article-metadata">
+                                    <a href="{{url_for('updateReview', rev_id=review.id, action='update')}}" class="m-1">Update</a>
+                                    <a href="{{url_for('updateReview', rev_id=review.id, action='delete')}}" class="m-1">Delete</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </article>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -81,3 +103,6 @@
       </div>
     
 {% endblock content %}
+{% block sidebar %}
+    {% include "sidebar.html" %}
+{% endblock sidebar %}

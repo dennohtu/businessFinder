@@ -1,10 +1,10 @@
 import os ##Save image to disk
 import secrets #Give image random name
 from PIL import Image ##Resize image
-from flask import render_template, url_for, flash, redirect, request, abort
+from flask import render_template, url_for, flash, redirect, request, abort, request
 from app import app, db, bcrypt
 #Using FlaskForm to create forms...makes work much easier to do and maintain
-from .forms import RegistrationForm, LoginForm, RegBusinessForm, UpdateAccountForm, CompleteBusinessProfile
+from .forms import RegistrationForm, LoginForm, RegBusinessForm, UpdateAccountForm, CompleteBusinessProfile, WriteReviewForm
 ##Handles all data
 from .model import User, Business, Category, Location, Review
 from flask_login import login_user, current_user, logout_user, login_required
@@ -19,6 +19,16 @@ def index():
     }
     data = Business.query.all()
     return render_template("index.html", app=app, data=data)
+
+##About page endpoint
+@app.route('/about')
+def about():
+    body = "This site was founded by Dennis Mureithi in 2018. It aims at connecting consumers and businesses by creating an easy platform for searching for what they desire. This site is not the actual business!"
+    app = {
+        "title":"About us",
+        "body" : body
+    }
+    return render_template('about.html', app=app, locations=locAndCat()[1], categories=locAndCat()[0])
 
 ##Register user endpoint
 @app.route("/signup", methods=['GET', 'POST'])
@@ -40,7 +50,7 @@ def signup():
         db.session.commit()
         flash('Account created, you can login now', 'success')
         return redirect(url_for('signin'))
-    return render_template("signup.html", app=app, form=form)
+    return render_template("signup.html", app=app, form=form, locations=locAndCat()[1], categories=locAndCat()[0])
 
 ##Login User endpoint
 @app.route("/signin", methods=['GET', 'POST'])
@@ -65,7 +75,7 @@ def signin():
             return redirect(next_page) if next_page else redirect(url_for('index'))
         else:
             flash('Login Failed. Please check username and password', 'danger')
-    return render_template("signin.html", app=app, form=form)
+    return render_template("signin.html", app=app, form=form, locations=locAndCat()[1], categories=locAndCat()[0])
 
 #Method to save image to filesystem
 #Returns image name to save to database
@@ -90,7 +100,7 @@ def save_prof_pic(form_picture):
 def account():
     app = {
         "title":"Account Page",
-        "Heading":"My Account",
+        "heading":"My Account",
         "image_file":url_for('static', filename='profile_pics/'+current_user.image_file)
     }
     form = UpdateAccountForm()
@@ -106,7 +116,7 @@ def account():
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
-    return render_template('account.html', app=app, form=form)
+    return render_template('account.html', app=app, form=form, locations=locAndCat()[1], categories=locAndCat()[0])
 
 #logout Endpoint
 @app.route('/signout')
@@ -135,7 +145,7 @@ def newBiz():
         return redirect(url_for('completeBizProfile', biz_id=business.id))
     elif request.method == 'GET':
         form.email.data = current_user.email
-    return render_template('create_business.html', app=app, form=form)
+    return render_template('create_business.html', app=app, form=form, locations=locAndCat()[1], categories=locAndCat()[0])
 
 ##Endpoint to add categories and location
 @app.route('/business/<int:biz_id>/completeprofile', methods=['POST', 'GET'])
@@ -161,7 +171,7 @@ def completeBizProfile(biz_id):
         db.session.commit()
         flash("New Business successfully created", 'success')
         return redirect(url_for('index'))
-    return render_template('complete_business.html', app=app, form=form)
+    return render_template('complete_business.html', app=app, form=form, locations=locAndCat()[1], categories=locAndCat()[0])
 
 ##Get business by id endpoint, displays all information related to the business
 @app.route('/business/<int:biz_id>', methods=['POST', 'GET'])
@@ -169,10 +179,12 @@ def business(biz_id):
     data = Business.query.get_or_404(biz_id)
     category = Category.query.filter_by(business_id=biz_id).all()
     location = Location.query.filter_by(business_id=biz_id).all()
+    review = Review.query.filter_by(business_id=biz_id).all()
     app = {
-        "title": "Business Profile"
+        "title": "Business Profile",
+        "heading": "Business Info"
     }
-    return render_template('business_info.html', app=app, post=data, categories=category, locations=location)
+    return render_template('business_info.html', app=app, post=data, categoriess=category, locationss=location, reviews=review, locations=locAndCat()[1], categories=locAndCat()[0])
 
 #Update business endpoint
 #One has to be logged iin to access this page
@@ -274,3 +286,107 @@ def deleteBusiness(biz_id):
     db.session.commit()
     flash('Business deleted!', 'success')
     return redirect(url_for('index'))
+
+##Write new review
+@app.route('/business/<int:biz_id>/review/<int:rev_id>', methods=['POST', 'GET'])
+@login_required
+def review(biz_id, rev_id):
+    app = {
+        "title":"Write review"
+    }
+    if rev_id != 0:
+        rev_data = Review.query.get(rev_id)
+    biz_data = Business.query.get(biz_id)
+    if biz_data.owner == current_user:
+        abort(403)
+    form = WriteReviewForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        message = form.message.data
+        if rev_id == 0:
+            review = Review(business=biz_data, email=email, message=message)
+            db.session.add(review)
+        else:
+            rev_data.email = form.email.data
+            rev_data.message = form.message.data
+        db.session.commit()
+        flash("Review added successfully", 'success')
+        return redirect(url_for('business', biz_id=biz_id))
+    elif request.method == 'GET':
+        form.email.data = current_user.email
+        if rev_id !=0:
+            form.message.data = rev_data.message
+    return render_template('review.html', app=app, form=form)
+
+#Update/delete existing review
+@app.route('/business/review/<int:rev_id>/<action>', methods=['POST', 'GET'])
+@login_required
+def updateReview(rev_id, action):
+    app = {
+        "title":"Update review"
+    }
+    rev_data = Review.query.get_or_404(rev_id)
+    if rev_data.email != current_user.email:
+        abort(403)
+    if action == 'delete':
+        db.session.delete(rev_data)
+        db.session.commit()
+        flash('deleted!', 'success')
+        return redirect(url_for('business', biz_id=rev_data.business_id))
+    elif action == 'update':
+        return redirect(url_for('review', biz_id=rev_data.business_id, rev_id=rev_id))
+
+###Return location and categories to display on the sidebar
+def locAndCat():
+    locations = Location.query.all()
+    categories = Category.query.all()
+    ##Append categories to a list
+    cat_list = []
+    for category in categories:
+        if category.category not in cat_list:
+            cat_list.append(category.category)
+    ##append counties to a list
+    loc_list = []
+    for location in locations:
+        if location.county not in loc_list:
+            loc_list.append(location.county)
+    return [cat_list, loc_list]
+
+##Search businesses by name/category/location
+@app.route("/business/search/<category>", methods=["POST"])
+def search(category):
+    app = {
+        "title":"Search",
+        "heading": "Search Results"
+    }
+    businesses = searchItem(category)
+    return render_template('index.html', app=app, data=businesses)
+
+##Private method that returns a list of businesses
+def searchItem(category):
+    businesses = []
+    if category == 'location':
+        county = request.form["location"]
+        #Get all locations with the county
+        locations = Location.query.filter_by(county=county).all()
+        biz_ids = []
+        for location in locations:
+            biz_ids.append(location.business_id)
+        ##Get businesses by id and append to list
+        for id in biz_ids:
+            businesses.append(Business.query.get(id))
+    elif category == 'category':
+        category = request.form['category']
+        #Get all categories that match
+        categories = Category.query.filter_by(category=category).all()
+        biz_ids = []
+        for cat in categories:
+            biz_ids.append(cat.business_id)
+        ##Get businesses by ids
+        for id in biz_ids:
+            businesses.append(Business.query.get(id))
+    elif category == 'name':
+        name = request.form['search']
+        #search businesses by name
+        return Business.query.filter_by(name=name).all()
+    return businesses 

@@ -63,7 +63,7 @@ class Review(db.Model):
     business_id = db.Column(db.Integer, db.ForeignKey('business.id'), nullable=False)
     email = db.Column(db.String(120), nullable=False)
     message = db.Column(db.String(500), nullable=False)
-    stars = db.Column(db.Integer, nullable=False, default=3)
+    stars = db.Column(db.Integer, nullable=False, default=0)
 
     def __repr__(self):
         return f"Review('{self.id}','{self.business_id}','{self.email}','{self.message}','{self.stars}')"

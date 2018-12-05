@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField, RadioField
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 from app.model import User, Business
@@ -112,4 +112,18 @@ class UpdateAccountForm(FlaskForm):
             user = User.query.filter_by(email=email.data).first()
             if user:
                 raise ValidationError('Email is taken, please choose a different one')
-            
+
+##Write review form
+class WriteReviewForm(FlaskForm):
+    email = StringField('Email Address', validators=[DataRequired(), Email()])
+    message = TextAreaField('Review', render_kw={"rows": 5, "cols": 11}, validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+    def validate_email(self, email):
+        email = User.query.filter_by(email=email.data).first()
+        if not email:
+            raise ValidationError('Email address is not registered. Please register  to write review')
+
+##Search form
+class SearchForm(FlaskForm):
+    field = RadioField('Radio')     
