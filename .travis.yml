@@ -6,6 +6,17 @@ python:
 # command to install dependencies
 install:
   - pip install -r requirements.txt
+  - pip install pytest-cov
 # command to run tests
 script:
-  - pytest test/app_test.py
+  - pytest --cov=test/app_test.py
+##Services to run
+services:
+  - postgresql
+
+before_script:
+  - psql -c "CREATE DATABASE business_finder_dennohtu_test;" -U postgres
+  - psql -c "CREATE USER dennoh WITH PASSWORD 'admin';" -U postgres
+
+after_success:
+  - coveralls
