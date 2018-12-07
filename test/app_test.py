@@ -156,4 +156,5 @@ def test_signout(test_client):
 
 #Destroy test session
 def test_models_drop_db(test_client):
+    db.session.close()
     db.drop_all()
