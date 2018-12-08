@@ -50,7 +50,7 @@ def signup():
         db.session.commit()
         flash('Account created, you can login now', 'success')
         return redirect(url_for('signin'))
-    return render_template("signup.html", app=app, form=form)
+    return render_template("signup.html", app=app, form=form, locations=locAndCat()[1], categories=locAndCat()[0])
 
 ##Login User endpoint
 @app.route("/signin", methods=['GET', 'POST'])
@@ -75,7 +75,7 @@ def signin():
             return redirect(next_page) if next_page else redirect(url_for('index'))
         else:
             flash('Login Failed. Please check username and password', 'danger')
-    return render_template("signin.html", app=app, form=form)
+    return render_template("signin.html", app=app, form=form, locations=locAndCat()[1], categories=locAndCat()[0])
 
 #Method to save image to filesystem
 #Returns image name to save to database
@@ -100,7 +100,7 @@ def save_prof_pic(form_picture):
 def account():
     app = {
         "title":"Account Page",
-        "Heading":"My Account",
+        "heading":"My Account",
         "image_file":url_for('static', filename='profile_pics/'+current_user.image_file)
     }
     form = UpdateAccountForm()
@@ -116,7 +116,7 @@ def account():
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
-    return render_template('account.html', app=app, form=form)
+    return render_template('account.html', app=app, form=form, locations=locAndCat()[1], categories=locAndCat()[0])
 
 #logout Endpoint
 @app.route('/signout')
@@ -145,7 +145,7 @@ def newBiz():
         return redirect(url_for('completeBizProfile', biz_id=business.id))
     elif request.method == 'GET':
         form.email.data = current_user.email
-    return render_template('create_business.html', app=app, form=form)
+    return render_template('create_business.html', app=app, form=form, locations=locAndCat()[1], categories=locAndCat()[0])
 
 ##Endpoint to add categories and location
 @app.route('/business/<int:biz_id>/completeprofile', methods=['POST', 'GET'])
@@ -171,7 +171,7 @@ def completeBizProfile(biz_id):
         db.session.commit()
         flash("New Business successfully created", 'success')
         return redirect(url_for('index'))
-    return render_template('complete_business.html', app=app, form=form)
+    return render_template('complete_business.html', app=app, form=form, locations=locAndCat()[1], categories=locAndCat()[0])
 
 ##Get business by id endpoint, displays all information related to the business
 @app.route('/business/<int:biz_id>', methods=['POST', 'GET'])
@@ -181,9 +181,10 @@ def business(biz_id):
     location = Location.query.filter_by(business_id=biz_id).all()
     review = Review.query.filter_by(business_id=biz_id).all()
     app = {
-        "title": "Business Profile"
+        "title": "Business Profile",
+        "heading": "Business Info"
     }
-    return render_template('business_info.html', app=app, post=data, categories=category, locations=location, reviews=review)
+    return render_template('business_info.html', app=app, post=data, categoriess=category, locationss=location, reviews=review, locations=locAndCat()[1], categories=locAndCat()[0])
 
 #Update business endpoint
 #One has to be logged iin to access this page
@@ -366,7 +367,6 @@ def searchItem(category):
     businesses = []
     if category == 'location':
         county = request.form["location"]
-        print(county)
         #Get all locations with the county
         locations = Location.query.filter_by(county=county).all()
         biz_ids = []

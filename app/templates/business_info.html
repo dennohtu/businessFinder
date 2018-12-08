@@ -1,6 +1,7 @@
 <!--Displays Business particular information-->
 {% extends "layout.html" %}
 {% block content %}
+    <h1 class='text-muted'>{{app.heading}}</h1>
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12">
@@ -24,7 +25,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-6">
-                                    {% for category in categories %}
+                                    {% for category in categoriess %}
                                         {% if post.owner == current_user %}
                                             <p class="article-content article-metadata">{{ category.category }}
                                                 <a class="m-1" href="{{ url_for('updateBusinessInfo',biz_id=post.id,category='category',cat_id=category.id) }}">Delete</a></p>
@@ -34,7 +35,7 @@
                                     {% endfor %}
                                 </div>
                                 <div class="col-sm-6">
-                                    {% for location in locations %}
+                                    {% for location in locationss %}
                                         {% if post.owner == current_user %}
                                             <p class="article-content article-metadata">County: {{ location.county }}
                                                     Region: {{ location.region }}
