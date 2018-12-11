@@ -42,3 +42,7 @@ Enjoy :)
 Deactivate the virtual environment using
 
 `deactivate`
+
+Live application on heroku
+
+https://business-finder-dennohtu.herokuapp.com/
