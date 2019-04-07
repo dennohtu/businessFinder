@@ -13,11 +13,14 @@ Customers can log in the application and view a catalogue of registered business
 
 Python 3.6+(Will not work with python 3.5 and below)
 
-Latest version of pip installed (`sudo apt-get install pip3` For python version 3+)
+Latest version of pip installed (`sudo apt-get install python3-pip` For python version 3+)
 
 Virtualenv installed (`sudo apt-get install virtualenv`)
 
+PostgreSQL installed on the local machine
+
 ## Installing
+The following should be done within the project's folder
 
 Create a virtual environment
 
@@ -29,7 +32,15 @@ Activate the virtual environment
 
 Install requirements from requirements.txt
 
-`pip install -r requirements.txt`
+`pip3 install -r requirements.txt`
+
+You need to create a new user in postgreSQL named `admin`.
+
+After creating the new user, enter into your python3 shell and set up with the following:
+
+`import db`
+`db.create_all()`
+
 
 ## RUNNING
 
