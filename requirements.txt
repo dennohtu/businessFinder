@@ -9,9 +9,6 @@ chardet==3.0.4
 Click==7.0
 configobj==5.0.6
 coverage==4.0.3
-cupshelpers==1.0
-cycler==0.10.0
-defer==1.0.6
 Flask==1.0.2
 Flask-Bcrypt==0.7.1
 Flask-Login==0.4.1
