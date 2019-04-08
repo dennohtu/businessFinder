@@ -168,8 +168,9 @@ def completeBizProfile(biz_id):
     }
     form = CompleteBusinessProfile()
     if form.validate_on_submit():
-        data.logo = save_prof_pic(form.logo.data)
-        data.video = save_business_video(form.video.data)
+        if form.logo.data or form.video.data:
+            data.logo = save_prof_pic(form.logo.data)
+            data.video = save_business_video(form.video.data)
         category = form.category.data
         county = form.county.data
         region = form.region.data
@@ -233,10 +234,10 @@ def updateBusiness(biz_id):
         if biz_data.name != form.name.data:
             biz_data.name = form.name.data
         biz_data.description = form.description.data
-        if form.logo.data:
-            biz_data.logo = save_prof_pic(form.logo.data)
-        if form.video.data:
-            biz_data.video = save_business_video(form.video.data)
+        if compForm.logo.data:
+            biz_data.logo = save_prof_pic(compForm.logo.data)
+        if compForm.video.data:
+            biz_data.video = save_business_video(compForm.video.data)
         #If county in form field is in the list of counties, the location object is updated, 
         #Otherwise new location is created
         if compForm.county.data in counties: 
