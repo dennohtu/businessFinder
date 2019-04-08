@@ -88,6 +88,8 @@ class RegBusinessForm(FlaskForm):
 
 ##This form is used to add business categories and locations
 class CompleteBusinessProfile(FlaskForm):
+    logo = FileField('Upload Business Logo', validators=[FileAllowed(['png','jpg','jpeg'])])
+    video = FileField('Upload Business Video Advert', validators=[FileAllowed(['mp4','avi','mkv','wmv','3gp'])])
     category = StringField('Categories(Separate with a comma)', validators=[DataRequired()])
     county = SelectField('Select County (Selecting a new county creates new location)', choices=counties, validators=[DataRequired()])
     region = StringField('Region within county', validators=[DataRequired()])
