@@ -195,7 +195,9 @@ def business(biz_id):
     review = Review.query.filter_by(business_id=biz_id).all()
     app = {
         "title": "Business Profile",
-        "heading": "Business Info"
+        "heading": "Business Info",
+        "logo":url_for('static', filename='profile_pics/'+data.logo),
+        "video":url_for('static', filename='videos/'+data.video)
     }
     return render_template('business_info.html', app=app, post=data, categoriess=category, locationss=location, reviews=review, locations=locAndCat()[1], categories=locAndCat()[0])
 

@@ -3,6 +3,13 @@
 {% block content %}
     <h1 class='text-muted'>{{app.heading}}</h1>
     <div class="container-fluid">
+        <div class="media">
+                <img class="rounded-circle account-img" src="{{app.logo}}">
+                <video width="600" controls autoplay>
+                        <source src="{{app.video}}" type="video/mp4">
+                        Your browser does not support HTML5 video.
+                      </video>
+            </div>
         <div class="row">
             <div class="col-sm-12">
                     <article class="media content-section">
