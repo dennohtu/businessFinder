@@ -101,6 +101,32 @@
                         {{ comp_form.location(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
+                <div class="form-group">
+                    {{ comp_form.logo.label(class="form-control-label")}}
+                    {% if comp_form.logo.errors %}
+                        {{ comp_form.logo(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in comp_form.logo.errors %}
+                                <span>{{error}}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ comp_form.logo(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ comp_form.video.label(class="form-control-label")}}
+                    {% if comp_form.video.errors %}
+                        {{ comp_form.logo(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in comp_form.video.errors %}
+                                <span>{{error}}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ comp_form.video(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
             </fieldset>
         {% endif %}
         <div class="form-group">

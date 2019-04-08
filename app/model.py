@@ -11,7 +11,7 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    image_file = db.Column(db.String(20), default='default.png', nullable=False)
+    image_file = db.Column(db.String(30), default='default.png', nullable=False)
     password = db.Column(db.String(64), nullable=False)
     businesses = db.relationship('Business', backref='owner', lazy=True)
 
@@ -24,6 +24,8 @@ class Business(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(500), nullable=False)
+    logo = db.Column(db.String(30), default='default_logo.png', nullable=False)
+    video = db.Column(db.String(30), default='default_video.png', nullable=False)
     date_added = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     categories = db.relationship('Category', backref='business', lazy=True)
@@ -31,7 +33,7 @@ class Business(db.Model):
     reviews = db.relationship('Review', backref='business', lazy=True)
 
     def __repr__(self):
-        return f"Business('{self.id}','{self.name}','{self.user_id}','{self.date_added}')"
+        return f"Business('{self.id}','{self.name}','{self.user_id}','{self.logo}','{self.video}','{self.date_added}')"
 
 ##Creates a category object
 #Returns a dictionary with id and category to be added to the business

@@ -94,6 +94,17 @@ def save_prof_pic(form_picture):
 
     return pic_name
 
+def save_business_video(form_video):
+    ##Give random name to video
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_video.filename)
+    vid_name = random_hex + f_ext
+    path = os.path.join(app.root_path, 'static/videos', vid_name)
+    form_video.save(path)
+
+    return vid_name
+
+
 ##User account Endpoint, Account editing done heree
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
@@ -157,6 +168,9 @@ def completeBizProfile(biz_id):
     }
     form = CompleteBusinessProfile()
     if form.validate_on_submit():
+        if form.logo.data or form.video.data:
+            data.logo = save_prof_pic(form.logo.data)
+            data.video = save_business_video(form.video.data)
         category = form.category.data
         county = form.county.data
         region = form.region.data
@@ -182,7 +196,9 @@ def business(biz_id):
     review = Review.query.filter_by(business_id=biz_id).all()
     app = {
         "title": "Business Profile",
-        "heading": "Business Info"
+        "heading": "Business Info",
+        "logo":url_for('static', filename='profile_pics/'+data.logo),
+        "video":url_for('static', filename='videos/'+data.video)
     }
     return render_template('business_info.html', app=app, post=data, categoriess=category, locationss=location, reviews=review, locations=locAndCat()[1], categories=locAndCat()[0])
 
@@ -218,6 +234,10 @@ def updateBusiness(biz_id):
         if biz_data.name != form.name.data:
             biz_data.name = form.name.data
         biz_data.description = form.description.data
+        if compForm.logo.data:
+            biz_data.logo = save_prof_pic(compForm.logo.data)
+        if compForm.video.data:
+            biz_data.video = save_business_video(compForm.video.data)
         #If county in form field is in the list of counties, the location object is updated, 
         #Otherwise new location is created
         if compForm.county.data in counties: 
