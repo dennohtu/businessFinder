@@ -168,9 +168,14 @@ def completeBizProfile(biz_id):
     }
     form = CompleteBusinessProfile()
     if form.validate_on_submit():
-        if form.logo.data or form.video.data:
+        if form.logo.data:
             data.logo = save_prof_pic(form.logo.data)
+        else:
+            data.logo = "default_logo.PNG"
+        if form.video.data:
             data.video = save_business_video(form.video.data)
+        else:
+            data.video = "default_video.mp4"
         category = form.category.data
         county = form.county.data
         region = form.region.data
