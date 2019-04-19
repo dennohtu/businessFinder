@@ -28,7 +28,5 @@ pytest==4.0.1
 python-coveralls==2.9.1
 PyYAML==4.2b1
 requests==2.20.1
-SQLAlchemy==1.2.14
-virtualenv==15.1.0
 wrapt==1.11.1
 WTForms==2.2.1
